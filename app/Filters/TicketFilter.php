@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filters;
 
 use Illuminate\Http\Request;
@@ -10,9 +11,20 @@ class TicketFilter extends BaseFilter
         $this->request = $request;
     }
 
+    // protected function organization_id($orgId)
+    // {
+    //     $this->builder->whereHas('clientProfile', fn($q) => $q->where('organization_id', $orgId));
+    // }
+
     protected function organization_id($orgId)
     {
-        $this->builder->whereHas('clientProfile', fn($q) => $q->where('organization_id', $orgId));
+        // Try to filter directly on the ticket first if the column exists
+        // Otherwise, keep the relation filter but ensure it handles arrays or single IDs
+        $this->builder->where(function ($query) use ($orgId) {
+            $query->whereHas('clientProfile', function ($q) use ($orgId) {
+                $q->where('organization_id', $orgId);
+            });
+        });
     }
 
     protected function client_profile_id($value)
@@ -52,7 +64,10 @@ class TicketFilter extends BaseFilter
     {
         $this->builder->where(function ($q) use ($value) {
             $q->where('title', 'LIKE', "%{$value}%")
-              ->orWhere('description', 'LIKE', "%{$value}%");
+                ->orWhere('description', 'LIKE', "%{$value}%");
+            if (is_numeric($value)) {
+                $q->orWhere('id', $value);
+            }
         });
     }
 }

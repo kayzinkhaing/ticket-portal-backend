@@ -121,11 +121,6 @@ class User extends Authenticatable
     }
     public function profileImage()
     {
-        // Adjust this logic based on how you identify the "profile" picture
-        // If you use Spatie Media Library:
-        // return $this->getMedia('avatars')->first();
-
-        // If you have a custom media relationship:
         return $this->media()->first();
     }
 
