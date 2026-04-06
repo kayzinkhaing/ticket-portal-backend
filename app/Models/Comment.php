@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class Comment extends BaseModel
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class Comment extends Model
         'user_id',
         'content',
         'is_internal',
-        'parent_id', 
+        'parent_id',
     ];
 
     // Relationships
